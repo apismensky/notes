@@ -30,32 +30,45 @@ public class IntegrationTest {
 
     @Test
     public void testGetList() {
-        Note[] notes = getInstanceOfResponse(WS.url(BASE_URI + "/notes").get().get(TIMEOUT), Note[].class);
+        WSResponse response = WS.url(BASE_URI + "/notes").get().get(TIMEOUT);
+        assertEquals(200, response.getStatus());
+        Note[] notes = getInstanceOfResponse(response, Note[].class);
         assertNotNull(notes);
         assertTrue(notes.length > 0);
     }
 
     @Test
     public void testGetById() {
-        Note note = getInstanceOfResponse(WS.url(BASE_URI + "/notes/1").get().get(TIMEOUT), Note.class);
+        WSResponse response = WS.url(BASE_URI + "/notes/1").get().get(TIMEOUT);
+        Note note = getInstanceOfResponse(response, Note.class);
+        assertEquals(200, response.getStatus());
         assertNotNull(note);
         assertEquals(1L, note.id.longValue());
     }
 
     @Test
+    public void testGetById404() {
+        assertEquals(404, WS.url(BASE_URI + "/notes/9999").get().get(TIMEOUT).getStatus());
+    }
+
+    @Test
     public void testCreate() {
         String name = "Ivan Drago";
-        Note note = getInstanceOfResponse(WS.url(BASE_URI + "/notes")
+        WSResponse response = WS.url(BASE_URI + "/notes")
                 .setContentType("application/json")
                 .post("{\"user\": \"" + name + "\", \"text\": \"I must break you\"}")
-                .get(TIMEOUT), Note.class);
+                .get(TIMEOUT);
+        assertEquals(200, response.getStatus());
+        Note note = getInstanceOfResponse(response, Note.class);
         assertNotNull(note);
         assertEquals(name, note.user);
     }
 
     @Test
     public void testDelete() {
-        Note[] notes = getInstanceOfResponse(WS.url(BASE_URI + "/notes/2").delete().get(TIMEOUT), Note[].class);
+        WSResponse response = WS.url(BASE_URI + "/notes/2").delete().get(TIMEOUT);
+        assertEquals(200, response.getStatus());
+        Note[] notes = getInstanceOfResponse(response, Note[].class);
         assertNotNull(notes);
         assertTrue(notes.length > 0);
         for(Note note : notes) {
@@ -63,8 +76,12 @@ public class IntegrationTest {
         }
     }
 
+    @Test
+    public void testDelete404() {
+        assertEquals(404, WS.url(BASE_URI + "/notes/999999").delete().get(TIMEOUT).getStatus());
+    }
+
     private <T> T getInstanceOfResponse(WSResponse response,  Class<T> clazz) {
-        assertEquals(200, response.getStatus());
         return Json.fromJson(Json.parse(response.getBody()), clazz);
     }
 

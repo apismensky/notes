@@ -1,0 +1,135 @@
+<html xmlns="http://www.w3.org/1999/html">
+    <head>
+        <title>Test API page</title>
+        <link rel="stylesheet" media="screen" href="/assets/stylesheets/main.css">
+        <script src="/assets/javascripts/jquery-1.9.0.min.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+        <script language="javascript">
+        // Execute HTTP call method for specified URL and attach response to the DOM element
+        // path relative URL of the resource
+        // element element to dump the content to
+        // dataToBeSent request object to be send in the body of the request
+        // method HTTP method (GET, POST, DELETE, PUT)
+        function callWs(opts) {
+            var data = null;
+            if (opts.data) {
+               data = JSON.stringify(opts.data);
+               alert(data);
+            }
+            $.ajax({
+                url: opts.path,
+                type: opts.method,
+                headers: {
+                    Accept: opts.type,
+                    "Content-Type": (opts.method == "DELETE") ? null : "application/json"
+                },
+                data: data,
+                success: function(response, textStatus, jqXHR) {
+                    $('<pre class="highlight">' + JSON.stringify(response, null, 4) + '</pre>').appendTo(opts.element);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert(textStatus + ", " + errorThrown);
+                }
+            });
+        }
+
+        /**
+          * Execute HTTP GET method for specified URL and attach response to the DOM element
+          * path relative URL of the resource
+          * element element to dump the content to
+          */
+        function getData(path, element) {
+            return callWs({"path":path, "element":element, "method":"GET"});
+        }
+
+        /**
+         * Execute HTTP POST method for specified URL and attach response to the DOM element
+         * path relative URL of the resource
+         * element element to dump the content to
+         * data data to be sent in the request body
+         */
+        function postData(path, element, data) {
+            return callWs({"path":path, "element":element, "data":data, "method":"POST"});
+        }
+
+        /**
+         * Execute HTTP DELETE method for specified URL and attach response to the DOM element
+         * path relative URL of the resource
+         * element element to dump the content to
+         * data data to be sent in the request body
+         */
+        function deleteData(path, element) {
+            return callWs({"path":path, "element":element, "method":"DELETE"});
+        }
+
+        </script>
+
+
+        <H2>Notes API</H2>
+        <ul>
+            <li><a href="#get_notes">GET /notes</a></li>
+            <li><a href="#get_note">GET /notes/:id</a></li>
+            <li><a href="#create_note">POST /notes</a></li>
+            <li><a href="#delete_note">DELETE /notes/:id</a></li>
+        </ul>
+
+        <HR><A NAME="get_notes"></A>
+
+        <PRE><b>GET http://{HOST}:{PORT}/notes</B></PRE>
+        <P>Returns list of notes
+
+        <form>
+            <input type="button" value="invoke" onclick="getData('/notes', '.notes_content' ) ;"/>
+            <input type="button" value="clear" onclick="$('.notes_content').empty();"/>
+        </form>
+
+        <div class="notes_content"></div>
+        <HR>
+
+        <A NAME="get_note"></A>
+
+        <PRE><b>GET http://{HOST}:{PORT}/notes/<input type="text" name="get_note_id" id="get_note_id" value="1"/></B></PRE>
+        <P>Returns note by ID
+
+        <form>
+            <input type="button" value="invoke" onclick="getData('/notes/' + $('#get_note_id').val(), '.note_content');"/>
+            <input type="button" value="clear" onclick="$('.note_content').empty();"/>
+        </form>
+
+        <div class="note_content"></div>
+        <HR>
+
+        <A NAME="create_note"></A>
+
+        <PRE><b>POST http://{HOST}:{PORT}/notes</B>
+{
+   user: <input type="text" name="create_note_user_id" id="create_note_user_id" value="John"/>,
+   text: <input type="text" name="create_token_text_id" id="create_note_text_id" value="Hi there"/>
+}</PRE>
+        <P>Create note
+
+        <form>
+            <input type="button" value="invoke" onclick="postData('/notes', '.note_create_content',{user:$('#create_note_user_id').val(),text:$('#create_note_text_id').val()});"/>
+            <input type="button" value="clear" onclick="$('.note_create_content').empty();"/>
+        </form>
+
+        <div class="note_create_content"></div>
+        <HR>
+
+        <A NAME="delete_note"></A>
+
+        <PRE><b>DELETE http://{HOST}:{PORT}/notes/<input type="text" name="delete_note_id" id="delete_note_id" value="1"/></B></PRE>
+        <P>Delete note by ID
+
+        <form>
+            <input type="button" value="invoke" onclick="deleteData('/notes/' +  + $('#delete_note_id').val(), '.delete_note_content');"/>
+            <input type="button" value="clear" onclick="$('.delete_note_content').empty();"/>
+        </form>
+
+        <div class="delete_note_content"></div>
+        <HR>
+
+        </body>
+</html>

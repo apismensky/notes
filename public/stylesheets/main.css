@@ -1,0 +1,8 @@
+html, body {
+    font-family: Helvetica, Arial;
+    color: #3A4244;
+}
+
+pre.highlight {
+    background-color: #d3d3d3;
+}

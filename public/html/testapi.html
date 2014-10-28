@@ -90,7 +90,7 @@
 
         <A NAME="get_note"></A>
 
-        <PRE><b>GET http://{HOST}:{PORT}/notes/<input type="text" name="get_note_id" id="get_note_id" value="1"/></B></PRE>
+        <PRE><b>GET http://{HOST}:{PORT}/notes/<input type="text" id="get_note_id" value="1"/></B></PRE>
         <P>Returns note by ID
 
         <form>
@@ -105,8 +105,8 @@
 
         <PRE><b>POST http://{HOST}:{PORT}/notes</B>
 {
-   user: <input type="text" name="create_note_user_id" id="create_note_user_id" value="John"/>,
-   text: <input type="text" name="create_token_text_id" id="create_note_text_id" value="Hi there"/>
+   user: <input type="text" id="create_note_user_id" value="John"/>,
+   text: <input type="text" id="create_note_text_id" value="Hi there"/>
 }</PRE>
         <P>Create note
 
@@ -120,7 +120,7 @@
 
         <A NAME="delete_note"></A>
 
-        <PRE><b>DELETE http://{HOST}:{PORT}/notes/<input type="text" name="delete_note_id" id="delete_note_id" value="1"/></B></PRE>
+        <PRE><b>DELETE http://{HOST}:{PORT}/notes/<input type="text" id="delete_note_id" value="1"/></B></PRE>
         <P>Delete note by ID
 
         <form>

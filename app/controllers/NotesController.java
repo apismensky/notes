@@ -2,7 +2,6 @@ package controllers;
 
 
 import models.Note;
-import play.Logger;
 import play.data.Form;
 import play.libs.Json;
 import play.mvc.Controller;

@@ -14,26 +14,40 @@
         // method HTTP method (GET, POST, DELETE, PUT)
         function callWs(opts) {
             var data = null;
+            var uuid = generateUUID();
+            var output = 'X-Request-ID: ' + uuid + '<br/>';
             if (opts.data) {
                data = JSON.stringify(opts.data);
-               //alert(data);
+               output += 'Request: ' + data + '<br/>';
             }
             $.ajax({
                 url: opts.path,
                 type: opts.method,
                 headers: {
                     Accept: opts.type,
-                    "Content-Type": (opts.method == "DELETE") ? null : "application/json"
+                    "Content-Type": (opts.method == "DELETE") ? null : "application/json",
+                    "X-Request-ID": uuid
                 },
                 data: data,
                 success: function(response, textStatus, jqXHR) {
-                    $('<pre class="highlight">' + JSON.stringify(response, null, 4) + '</pre>').appendTo(opts.element);
+                    $('<pre class="highlight">' + output + 'Response: <br/>' + JSON.stringify(response, null, 4) + '</pre>').appendTo(opts.element);
                 },
                 error: function(jqXHR, textStatus, errorThrown){
-                    alert(textStatus + ", " + errorThrown);
+                    $('<pre class="error">' + output + textStatus + ', ' + errorThrown + '<br/>' + JSON.stringify(jqXHR, null, 4) + '</pre>').appendTo(opts.element);
                 }
             });
         }
+
+        // See http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+        function generateUUID(){
+            var d = new Date().getTime();
+            var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = (d + Math.random()*16)%16 | 0;
+                d = Math.floor(d/16);
+                return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+            });
+            return uuid;
+        };
 
         /**
           * Execute HTTP GET method for specified URL and attach response to the DOM element

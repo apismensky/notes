@@ -6,3 +6,7 @@ html, body {
 pre.highlight {
     background-color: #d3d3d3;
 }
+
+pre.error {
+    background-color : #d3a99f ;
+}
